@@ -7,6 +7,7 @@ from constants import JIRA_API_KEY,TECHNOLOGY_TEMPLATES, JIRA_URL,JIRA_USERNAME,
 
 NUMBER_OF_ISSUES_TO_CREATE = 20000
 MAX_ISSUES_PER_REQUEST = 50
+
 url = f"{JIRA_URL}/rest/api/3/issue/bulk"
 servers = ["a","b","c","d"]
 server_annotations = ["srv","SRV","Srv"]
