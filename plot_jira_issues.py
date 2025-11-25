@@ -46,9 +46,13 @@ async def fetch_all_issues(project={JIRA_PROJECT_KEY}):
         with open(SAVE_FILE, "r") as f:
             progress_data = json.load(f)
             print(f"Loaded progress from {SAVE_FILE} with next_page_token {progress_data.get('nextPageToken', '')}")
+            
     all_issues = progress_data.get("all_issues", [])
     next_page_token = progress_data.get("nextPageToken", "")
     max_results = 10  
+    max_pages = 10000
+    page_counter = 0
+
     async with aiohttp.ClientSession() as session:
         params = {
             "jql": f"project={project}",
@@ -56,7 +60,7 @@ async def fetch_all_issues(project={JIRA_PROJECT_KEY}):
             "maxResults": max_results,
             "fields": "summary,description",
         }
-        while True:
+        while page_counter < max_pages:
             params["nextPageToken"] = next_page_token
             async with session.get(f"{JIRA_URL}/rest/api/3/search/jql", params=params, headers=headers, auth=auth) as response:
                     data = await response.json()
@@ -65,9 +69,10 @@ async def fetch_all_issues(project={JIRA_PROJECT_KEY}):
                     progress_data["all_issues"] = all_issues
                     progress_data["nextPageToken"] = data.get("nextPageToken", "")
                     save_progress()
-                    if "nextPageToken" not in data:
+                    if "nextPageToken" not in data or not issues:
                         break  # fetched all issues
                     next_page_token = data["nextPageToken"]
+                    page_counter += 1
     return all_issues
 
 all_issues = asyncio.run(fetch_all_issues())
@@ -111,7 +116,7 @@ tickets_per_server, tickets_per_technology = count_tickets_per_category(all_issu
 servers = list(tickets_per_server.keys())
 number_of_tickets = list(tickets_per_server.values())
 
-plt.figure(1,figsize=(8, 6))
+plt.figure(1,figsize=(9, 6))
 plt.bar(servers, number_of_tickets)
 
 plt.xlabel('Server Name')
