@@ -9,3 +9,5 @@ Regarding the mission
 - create_jira_issues.py - creates the environment by randomizing many issues. This is Phase 1.
 - plot_jira_issues.py - implements Phase 2. The end result is two figures with histograms counting the number of tickets for each technology and each server
 - tech_category_classifier.py is a custom module I had built to help me identify the technical keywords and the underlying technology. It is used inisde plot_jira_issues to classify which technology was used
+
+<img width="2274" height="854" alt="image" src="https://github.com/user-attachments/assets/d610d8a2-9728-4f4b-8afa-8634730b7041" />
